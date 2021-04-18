@@ -1,19 +1,31 @@
 <?php
-include('functions.php');
+
+include("functions.php");
+
+$id = $_GET["id"];
+
 $pdo = connect_to_db();
-$sql = 'SELECT * FROM works';
+
+// データ取得SQL作成
+$sql = 'SELECT * FROM works WHERE id=:id';
+
+// SQL準備&実行
 $stmt = $pdo->prepare($sql);
+$stmt->bindValue(':id', $id, PDO::PARAM_INT);
 $status = $stmt->execute();
 
-
+// データ登録処理後
 if ($status == false) {
+  // SQL実行に失敗した場合はここでエラーを出力し，以降の処理を中止する
   $error = $stmt->errorInfo();
   echo json_encode(["error_msg" => "{$error[2]}"]);
   exit();
- } else {
+} else {
+  // 正常にSQLが実行された場合は指定の11レコードを取得
+  // fetch()関数でSQLで取得したレコードを取得できる
   $record = $stmt->fetch(PDO::FETCH_ASSOC);
- }
- ...
+}
+
 
 ?>
 
